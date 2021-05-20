@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<meta charset="UTF-8">
+
+<style>
+    input[type=text], select {
+        width: 50%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    input[type=button] {
+        width: 50%;
+        background-color: #4CAF50;
+        color: white;
+        padding: 14px 200px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    input[type=submit]:hover {
+        background-color: #45b049;
+    }
+
+    div {
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        padding: 50px;
+    }
+
+    .button {
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+    }
+    .slider {
+        -webkit-appearance: none;
+        width: 50%;
+        height: 25px;
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+    }
+
+    .slider:hover {
+        opacity: 1;
+    }
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 25px;
+        height: 25px;
+        background: #4CAF50;
+        cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+        width: 25px;
+        height: 25px;
+        background: #4CAF50;
+        cursor: pointer;
+    }
+
+</style>
+<body>
+
+<h3>Lights Control</h3>
+
+<div>
+    <button class="button" onclick="toggle()">Toggle</button>
+    <p>Brightness</p>
+    <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+    <form>
+        <label for="colorName">Color</label>
+        <input type="text" id="colorName" name="colorName" placeholder="Enter a color..">
+        <input type="button" id="submit" value="Submit" onclick="return runAllTheThings()">
+    </form>
+</div>
+
+</body>
+</html>
+
+
+<script>
+    const host = window.location.hostname
+    const port = window.location.port
+
+    function toggle() {
+        let toggleUrl = 'http://' + host + ':' + port + '/toggle';
+        console.log("ok")
+        fetch(toggleUrl)
+    }
+    function runAllTheThings() {
+        postData()
+        postBrightness()
+    }
+    function postData() {
+        let Url='http://' + host + ':' + port + '/color';
+        try {
+            let data = {"color": document.getElementById("colorName").value};console.log(data)
+            fetch(Url, {
+                method: 'POST',
+                body: JSON.stringify(data)
+            });
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }
+    function postBrightness() {
+        let brightnessUrl = 'http://' + host + ':' + port + '/brightness';
+        let data = {"value": document.getElementById("myRange").value};
+        console.log(data)
+        fetch(brightnessUrl, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+    }
+</script>
