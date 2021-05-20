@@ -43,7 +43,7 @@ func (d *dynamoDB) GetColorValue(name string) (string, error) {
 	err = dynamodbattribute.UnmarshalMap(result.Item, &color)
 	if err != nil {
 		fmt.Println(fmt.Sprintf("unmarshal error: %v", err))
-		return "", fmt.Errorf("internal error")
+		return "", fmt.Errorf("internal error encountered")
 	}
 	fmt.Println(color.Value)
 	return color.Value, nil
