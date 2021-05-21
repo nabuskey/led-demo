@@ -80,34 +80,21 @@ environments:
                       secretKeyRef:
                         name: led-demo-creds
                         key: token
-#                  - name: AWS_ACCESS_KEY_ID
-#                    valueFrom:
-#                      secretKeyRef:
-#                        name: aws-creds
-#                        key: accessKey
-#                  - name: AWS_SECRET_ACCESS_KEY
-#                    valueFrom:
-#                      secretKeyRef:
-#                        name: aws-creds
-#                        key: secretKey
-    # - kind: k8s/resource@v1
-    #   spec:
-    #     metadata:
-    #       application: ledemo
-    #     template:
-    #       apiVersion: dynamodb.aws.crossplane.io/v1alpha1
-    #       kind: Table
-    #       metadata:
-    #         name: sample-table
-    #       spec:
-    #         forProvider:
-    #           region: us-west-2
-    #           attributeDefinitions:
-    #             - attributeName: name
-    #               attributeType: S
-    #           keySchema:
-    #             - attributeName: name
-    #               keyType: HASH
-    #           provisionedThroughput:
-    #             readCapacityUnits: 1
-    #             writeCapacityUnits: 1
+    - kind: k8s/resource@v1
+        spec:
+          metadata:
+            application: ledemo
+          template:
+            apiVersion: dynamodb.services.k8s.aws/v1alpha1
+            kind: Table
+            metadata:
+              name: test-table
+            spec:
+              attributeDefinitions:
+                - attributeName: "Name"
+                  attributeType: "S"
+              keySchema:
+                - attributeName: "Name"
+                  keyType: "HASH"
+              billingMode: "PAY_PER_REQUEST"
+              tableName: test-table

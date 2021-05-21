@@ -15,9 +15,9 @@ import (
 
 var nl Nanoleaf
 var db dynamoDB
+
 //go:embed frontend/index.html
 var indexHtml []byte
-
 
 func main() {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
@@ -37,7 +37,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
 
 func toggle(w http.ResponseWriter, r *http.Request) {
@@ -77,7 +76,7 @@ func setBrightness(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	bi, err  := strconv.Atoi(b.Value)
+	bi, err := strconv.Atoi(b.Value)
 	if err != nil {
 		fmt.Printf("invalid int specified: %v \n", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -92,10 +91,10 @@ func setBrightness(w http.ResponseWriter, r *http.Request) {
 }
 
 type Nanoleaf struct {
-	Address string
-	Port string
+	Address   string
+	Port      string
 	AuthToken string
-	Url string
+	Url       string
 }
 
 func (n *Nanoleaf) New() {
@@ -206,10 +205,10 @@ func (n *Nanoleaf) OnOff() {
 
 func (n *Nanoleaf) brightness(value int) {
 	brightness := BrightnessRequest{
-		 struct {
-		Value    int `json:"value"`
-		Duration int `json:"duration"`
-	}{Value: value, Duration: 1},
+		struct {
+			Value    int `json:"value"`
+			Duration int `json:"duration"`
+		}{Value: value, Duration: 1},
 	}
 	req, err := json.Marshal(brightness)
 	if err != nil {
@@ -268,10 +267,10 @@ type NanoleafPanels struct {
 
 type NanoleafStaticColorRequest struct {
 	Write struct {
-		Command  string        `json:"command"`
-		AnimType string        `json:"animType"`
-		AnimData string        `json:"animData"`
-		Loop     bool          `json:"loop"`
+		Command  string   `json:"command"`
+		AnimType string   `json:"animType"`
+		AnimData string   `json:"animData"`
+		Loop     bool     `json:"loop"`
 		Palette  []string `json:"palette"`
 	} `json:"write"`
 }
