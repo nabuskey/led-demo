@@ -1,0 +1,113 @@
+name: test1
+application: ledemo
+serviceAccount: keeltest-service-account
+artifacts:
+- name: nabuskey/led-demo
+  type: docker
+  reference: my-docker-artifact
+  tagVersionStrategy: increasing-tag
+environments:
+  - name: dev
+    locations:
+      account: deploy-experiments
+      regions: []
+    resources:
+    - kind: k8s/resource@v1
+      spec:
+        metadata: 
+          application: ledemo
+        template:
+          apiVersion: v1
+          kind: Service
+          metadata:
+            name: ledemo
+            namespace: test
+          spec:
+            ports:
+            - port: 8080
+              protocol: TCP
+              targetPort: 4000
+            type: ClusterIP
+            selector:
+              app: ledemo
+    - kind: k8s/resource@v1
+      spec:
+        container:
+          reference: my-docker-artifact
+        metadata: 
+          application: ledemo
+        template:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata: 
+            name: ledemo
+            namespace: test
+          spec:
+            replicas: 1
+            selector:
+              matchLabels:
+                app: ledemo
+            template:
+              metadata:
+                labels:
+                  app: ledemo
+              spec:
+                serviceAccount: led-demo-dynamodb
+                securityContext:
+                  fsGroup: 100
+                containers:
+                - name: ledemo
+                  image: my-docker-artifact
+                  ports:
+                  - name: traffic-port
+                    containerPort: 4000
+                    protocol: TCP
+                  readinessProbe:
+                    httpGet:
+                      port: traffic-port
+                      path: /
+                  env:
+                  - name: TABLE_NAME
+                    value: test-table
+                  - name: AWS_DEFAULT_REGION
+                    value: us-west-2
+                  - name: NL_ADDRESS
+                    value: '174.52.99.169'
+                  - name: NL_PORT
+                    value: '8443'
+                  - name: NL_TOKEN
+                    valueFrom:
+                      secretKeyRef:
+                        name: led-demo-creds
+                        key: token
+#                  - name: AWS_ACCESS_KEY_ID
+#                    valueFrom:
+#                      secretKeyRef:
+#                        name: aws-creds
+#                        key: accessKey
+#                  - name: AWS_SECRET_ACCESS_KEY
+#                    valueFrom:
+#                      secretKeyRef:
+#                        name: aws-creds
+#                        key: secretKey
+    # - kind: k8s/resource@v1
+    #   spec:
+    #     metadata:
+    #       application: ledemo
+    #     template:
+    #       apiVersion: dynamodb.aws.crossplane.io/v1alpha1
+    #       kind: Table
+    #       metadata:
+    #         name: sample-table
+    #       spec:
+    #         forProvider:
+    #           region: us-west-2
+    #           attributeDefinitions:
+    #             - attributeName: name
+    #               attributeType: S
+    #           keySchema:
+    #             - attributeName: name
+    #               keyType: HASH
+    #           provisionedThroughput:
+    #             readCapacityUnits: 1
+    #             writeCapacityUnits: 1
