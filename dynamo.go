@@ -26,7 +26,7 @@ func (d *dynamoDB) GetColorValue(name string) (string, error) {
 	result, err := d.client.GetItem(&dynamodb.GetItemInput{
 		TableName: aws.String(os.Getenv("TABLE_NAME")),
 		Key: map[string]*dynamodb.AttributeValue{
-			"name": {
+			"Name": {
 				S: aws.String(name),
 			},
 		},

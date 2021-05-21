@@ -27,7 +27,7 @@ environments:
             - port: 8080
               protocol: TCP
               targetPort: 4000
-            type: ClusterIP
+            type: LoadBalancer
             selector:
               app: ledemo
     - kind: k8s/resource@v1
