@@ -12,24 +12,24 @@ environments:
       account: deploy-experiments
       regions: []
     resources:
-    - kind: k8s/resource@v1
-      spec:
-        metadata: 
-          application: ledemo
-        template:
-          apiVersion: v1
-          kind: Service
-          metadata:
-            name: ledemo
-            namespace: test
-          spec:
-            ports:
-            - port: 8080
-              protocol: TCP
-              targetPort: 4000
-            type: ClusterIP
-            selector:
-              app: ledemo
+#    - kind: k8s/resource@v1
+#      spec:
+#        metadata:
+#          application: ledemo
+#        template:
+#          apiVersion: v1
+#          kind: Service
+#          metadata:
+#            name: ledemo
+#            namespace: test
+#          spec:
+#            ports:
+#            - port: 8080
+#              protocol: TCP
+#              targetPort: 4000
+#            type: ClusterIP
+#            selector:
+#              app: ledemo
     - kind: k8s/resource@v1
       spec:
         container:
