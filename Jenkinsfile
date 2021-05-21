@@ -28,27 +28,13 @@ pipeline {
         }
       }
     }
-    stage('Build image release') {
-      when { buildingTag() }
-      steps {
-        container('docker'){
-          sh 'echo build release'
-          script {
-            app = docker.build("nabuskey/led-demo", "--build-arg jobName=${env.JOB_NAME} .")
-            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                app.push("${env.TAG_NAME}")
-            }
-          }      
-        }
-      }
-    }
     stage('Build image') {
       when { not { buildingTag() }}
       steps {
         container('docker'){
           sh 'echo build'
           script {
-            app = docker.build("nabuskey/led-demo", "--build-arg jobName=${env.JOB_NAME} --label buildNumber=${env.BUILD_NUMBER} --label commitId=${env.GIT_COMMIT} --label branch=${env.GIT_BRANCH} .")
+            app = docker.build("nabuskey/led-demo", "--label jobName=${env.JOB_NAME} --label buildNumber=${env.BUILD_NUMBER} --label commitId=${env.GIT_COMMIT} --label branch=${env.GIT_BRANCH} .")
             docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
               app.push("${env.BUILD_NUMBER}")
               app.push("latest")
